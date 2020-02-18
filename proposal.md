@@ -8,8 +8,8 @@
 3. The largest part of the project that we don't have much experience in is network programming. Luckily, groups in previous semesters have worked with such programming so we can look at their resources as a starting point for ourselves. When it comes to making the game, we aren't as worried as that is mostly console-based input processing.
 
 4. Immediate Tasks:
-  1. Read chapters 9 and 11 in Head First C
-  * Finish reading the chapters = done
+  * Read chapters 9 and 11 in Head First C
+  - Finish reading the chapters = done
   2. Begin reading hackerchat resources
   * Explain what's going on in your assigned piece of code to the other team members = done
   3. Outline game logic
