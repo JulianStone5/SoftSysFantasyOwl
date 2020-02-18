@@ -9,8 +9,8 @@
 
 4. Immediate Tasks:
     1. Read chapters 9 and 11 in Head First C
-    * Finish reading the chapters = done
+        * Finish reading the chapters = done
     2. Begin reading hackerchat resources
-    * Explain what's going on in your assigned piece of code to the other team members = done
+        * Explain what's going on in your assigned piece of code to the other team members = done
     3. Outline game logic
-    * Finish team meeting = done
+        * Finish team meeting = done
