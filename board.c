@@ -68,7 +68,8 @@ void build_board(int *board, int rows, int cols) {
   int i;
   char input[5];
   for(i = 1; i <= 5; i++) {
-    printf("Let's place Ship %d of size %d...\n", i, get_type(i));
+    int ship_type = get_type(i);
+    printf("Let's place Ship %d of size %d...\n", i, ship_type);
     printf("Direction? Right (1) or Down (2): ");
     fgets(input, 5, stdin);
     int dir = atoi(input);
@@ -78,9 +79,14 @@ void build_board(int *board, int rows, int cols) {
       fgets(input, 5, stdin);
       dir = atoi(input);
     }
-    printf("Starting Column? Options A-K: ") {
-      
-    }
+    printf("Starting Coordinate? Options A1-K9: ");
+    fgets(input, 5, stdin);
+    int sX = input[0]-65;
+    int sY = input[1]-'0'-1;
+    add_ship(board,rows,cols,i,sX,sY,dir);
+    printf("\n");
+    print_board(board,rows,cols);
+    printf("\n");
   }
 }
 
