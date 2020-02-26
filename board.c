@@ -151,7 +151,8 @@ void build_board(int *board, int rows, int cols) {
     add_ship(board,rows,cols,i,s[0],s[1],dir);
     printf("\n");
   }
-  printf("Done. Board Generated.");
+  print_board(board, rows, cols);
+  printf("Done. Board Generated.\n");
 }
 
 /*
