@@ -19,7 +19,13 @@ This function prints the entire board.
 */
 void print_board(int *board, int rows, int cols) {
   int i,j;
+  printf("  ");
+  for(j = 0; j < cols; j++) {
+    printf("  %c ", (char)(j+'A'));
+  }
+  printf(" \n");
   for(i = 0; i < rows; i++) {
+    printf("%d ", i+1);
     for(j = 0; j < cols; j++) {
       char c[2];
       sprintf(c, "%d",*(board+i*cols+j));
@@ -32,7 +38,10 @@ void print_board(int *board, int rows, int cols) {
   }
 }
 
-int get_type(int ship) {
+/*
+Converts ships number label to ship size
+*/
+int get_size(int ship) {
   switch(ship) {
     case 1:
       return 2;
@@ -52,18 +61,24 @@ int get_type(int ship) {
   }
 }
 
+/*
+Add a ship to a board given its label, start pos, and direction
+*/
 void add_ship(int *board, int rows, int cols, int ship, int sX, int sY, int dir) {
   int i, j;
   int right = (dir == 1) ? 1 : 0;
   int down = (dir == 2) ? 1 : 0;
-  int ship_type = get_type(ship);
-  for(i = sY; i < sY+down*ship_type+right; i++) {
-    for(j = sX; j < sX+right*ship_type+down; j++) {
+  int ship_size = get_size(ship);
+  for(i = sY; i < sY+down*ship_size+right; i++) {
+    for(j = sX; j < sX+right*ship_size+down; j++) {
       *(board+i*cols+j) = ship;
     }
   }
 }
 
+/*
+Get user input to pick a ship's direction
+*/
 int getDir(char * input) {
   printf("Direction? Right (1) or Down (2): ");
   fgets(input, 5, stdin);
@@ -77,31 +92,66 @@ int getDir(char * input) {
   return dir;
 }
 
-void getStart(int * s, char * input, int dir, int ship_type, int rows, int cols) {
+/*
+Detect if a new ship would be colliding with existing ships
+*/
+int isColliding(int * board, int * s, int ship_size, int dir, int cols) {
+  int i, j;
+  int right = (dir == 1) ? 1 : 0;
+  int down = (dir == 2) ? 1 : 0;
+  for(i = s[1]; i < s[1]+down*ship_size+right; i++) {
+    for(j = s[0]; j < s[0]+right*ship_size+down; j++) {
+      if(*(board+i*cols+j) != 0) {
+        return 1;
+      }
+    }
+  }
+  return 0;
+}
+
+/*
+Get user input to pick a ship's starting point
+*/
+void getStart(int * board, int rows, int cols, char * input, int * s, int ship_size, int dir) {
   printf("Starting Coordinate? Options A1-K9: ");
   fgets(input, 5, stdin);
   s[0] = input[0]-'A';
   s[1] = input[1]-'1';
   int right = (dir == 1) ? 1 : 0;
   int down = (dir == 2) ? 1 : 0;
-  int valX = (s[0] < rows - right*ship_type);
+  int valX = ((s[0] <= cols - right*ship_size) && (s[0] >= 0)) ? 1 : 0;
+  int valY = ((s[1] <= rows - down*ship_size) && (s[1] >= 0)) ? 1 : 0;
+  while(!valX || !valY || isColliding(board, s, ship_size, dir,cols)) {
+    printf("Invalid input\n");
+    printf("Starting Coordinate? Options A1-K9: ");
+    fgets(input, 5, stdin);
+    s[0] = input[0]-'A';
+    s[1] = input[1]-'1';
+    valX = ((s[0] <= cols - right*ship_size) && (s[0] >= 0)) ? 1 : 0;
+    valY = ((s[1] <= rows - down*ship_size) && (s[1] >= 0)) ? 1 : 0;
+  }
 }
 
+/*
+Get user input to build a starting board
+*/
 void build_board(int *board, int rows, int cols) {
   make_board(board,rows,cols);
   int i;
   char input[5];
+  printf("Generating board...\n\n");
   for(i = 1; i <= 5; i++) {
-    int ship_type = get_type(i);
-    printf("Let's place Ship %d of size %d...\n", i, ship_type);
-    int dir = getDir(input);
-    int s[2];
-    getStart(s,input, dir, ship_type, rows, cols);
-    add_ship(board,rows,cols,i,s[0],s[1],dir);
-    printf("\n");
     print_board(board,rows,cols);
     printf("\n");
+    int ship_size = get_size(i);
+    printf("Let's place Ship %d of size %d...\n", i, ship_size);
+    int dir = getDir(input);
+    int s[2];
+    getStart(board,rows,cols,input,s,ship_size,dir);
+    add_ship(board,rows,cols,i,s[0],s[1],dir);
+    printf("\n");
   }
+  printf("Done. Board Generated.");
 }
 
 /*
@@ -112,6 +162,5 @@ int main() {
   int rows = 9, cols = 11;
   int *board = (int *)malloc(rows*cols*sizeof(int));
   build_board(board, rows, cols);
-  print_board(board, rows, cols);
   return 0;
 }
