@@ -5,8 +5,10 @@ The main function executes the above functions in
 order to create and print a board.
 */
 int main() {
-  int rows = 9, cols = 11;
-  int *board = (int *)malloc(rows*cols*sizeof(int));
-  build_board(board, rows, cols);
+  int board[rows][cols];
+  int guess[rows][cols];
+  //make_board(guess);
+  //build_board(board);
+  //make_guess(board,guess);
   return 0;
 }

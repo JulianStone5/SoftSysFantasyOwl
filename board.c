@@ -1,13 +1,15 @@
 #include "board.h"
 
+int rows = 9;
+int cols = 9;
 /*
 Make_board creates and populates a 9x11 board with zeros
 */
-void make_board(int *board, int rows, int cols) {
+void make_board(int board[rows][cols]) {
   int i, j;
   for(i = 0; i < rows; i++) {
     for(j = 0; j < cols; j++) {
-      *(board+i*cols+j) = 0;
+      board[i][j] = 0;
     }
   }
 }
@@ -15,7 +17,7 @@ void make_board(int *board, int rows, int cols) {
 /*
 This function prints the entire board.
 */
-void print_board(int *board, int rows, int cols) {
+void print_board(int board[rows][cols]) {
   int i,j;
   printf("  ");
   for(j = 0; j < cols; j++) {
@@ -25,12 +27,16 @@ void print_board(int *board, int rows, int cols) {
   for(i = 0; i < rows; i++) {
     printf("%d ", i+1);
     for(j = 0; j < cols; j++) {
-      char c[2];
-      sprintf(c, "%d",*(board+i*cols+j));
-      if(c[0] == '0') {
-        c[0] = '~';
+      int val = board[i][j];
+      if(val == 0) {
+        printf("| ~ ");
+      } else if(val == -1) {
+        printf("| X ");
+      } else if(val == -2) {
+        printf("| O ");
+      } else {
+        printf("| %d ",val);
       }
-      printf("| %s ",c);
     }
     printf("|\n");
   }
@@ -62,14 +68,14 @@ int get_size(int ship) {
 /*
 Add a ship to a board given its label, start pos, and direction
 */
-void add_ship(int *board, int rows, int cols, int ship, int sX, int sY, int dir) {
+void add_ship(int board[rows][cols], int ship, int sX, int sY, int dir) {
   int i, j;
   int right = (dir == 1) ? 1 : 0;
   int down = (dir == 2) ? 1 : 0;
   int ship_size = get_size(ship);
   for(i = sY; i < sY+down*ship_size+right; i++) {
     for(j = sX; j < sX+right*ship_size+down; j++) {
-      *(board+i*cols+j) = ship;
+      board[i][j] = ship;
     }
   }
 }
@@ -93,13 +99,13 @@ int getDir(char * input) {
 /*
 Detect if a new ship would be colliding with existing ships
 */
-int isColliding(int * board, int * s, int ship_size, int dir, int cols) {
+int isColliding(int board[rows][cols], int s[2], int ship_size, int dir) {
   int i, j;
   int right = (dir == 1) ? 1 : 0;
   int down = (dir == 2) ? 1 : 0;
   for(i = s[1]; i < s[1]+down*ship_size+right; i++) {
     for(j = s[0]; j < s[0]+right*ship_size+down; j++) {
-      if(*(board+i*cols+j) != 0) {
+      if(board[i][j] != 0) {
         return 1;
       }
     }
@@ -110,7 +116,7 @@ int isColliding(int * board, int * s, int ship_size, int dir, int cols) {
 /*
 Get user input to pick a ship's starting point
 */
-void getStart(int * board, int rows, int cols, char * input, int * s, int ship_size, int dir) {
+void getStart(int board[rows][cols],char * input, int s[2],int ship_size, int dir) {
   printf("Starting Coordinate? Options A1-K9: ");
   fgets(input, 5, stdin);
   s[0] = input[0]-'A';
@@ -119,7 +125,7 @@ void getStart(int * board, int rows, int cols, char * input, int * s, int ship_s
   int down = (dir == 2) ? 1 : 0;
   int valX = ((s[0] <= cols - right*ship_size) && (s[0] >= 0)) ? 1 : 0;
   int valY = ((s[1] <= rows - down*ship_size) && (s[1] >= 0)) ? 1 : 0;
-  while(!valX || !valY || isColliding(board, s, ship_size, dir,cols)) {
+  while(!valX || !valY || isColliding(board,s, ship_size, dir)) {
     printf("Invalid input\n");
     printf("Starting Coordinate? Options A1-K9: ");
     fgets(input, 5, stdin);
@@ -133,22 +139,37 @@ void getStart(int * board, int rows, int cols, char * input, int * s, int ship_s
 /*
 Get user input to build a starting board
 */
-void build_board(int *board, int rows, int cols) {
-  make_board(board,rows,cols);
+void build_board(int board[rows][cols]) {
+  make_board(board);
   int i;
   char input[5];
   printf("Generating board...\n\n");
   for(i = 1; i <= 5; i++) {
-    print_board(board,rows,cols);
+    print_board(board);
     printf("\n");
     int ship_size = get_size(i);
     printf("Let's place Ship %d of size %d...\n", i, ship_size);
     int dir = getDir(input);
     int s[2];
-    getStart(board,rows,cols,input,s,ship_size,dir);
-    add_ship(board,rows,cols,i,s[0],s[1],dir);
+    getStart(board,input,s,ship_size,dir);
+    add_ship(board,i,s[0],s[1],dir);
     printf("\n");
   }
-  print_board(board, rows, cols);
+  print_board(board);
   printf("Done. Board Generated.\n");
+}
+
+void make_guess(int board[rows][cols], int guess[rows][cols]) {
+  int s[2];
+  char input[5];
+  printf("Guess? Options A1-K9: ");
+  fgets(input, 5, stdin);
+  s[0] = input[0]-'A';
+  s[1] = input[1]-'1';
+  if(isColliding(board,s,1,1)) {
+    guess[s[1]][s[0]] = -1;
+  } else {
+    guess[s[1]][s[0]] = -2;
+  }
+  print_board(guess);
 }

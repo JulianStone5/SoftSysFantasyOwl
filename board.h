@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-void make_board(int *board, int rows, int cols);
-void print_board(int *board, int rows, int cols);
-int isColliding(int * board, int * s, int ship_size, int dir, int cols);
-void build_board(int *board, int rows, int cols);
+int rows, cols;
+void make_board(int board[rows][cols]);
+void print_board(int board[rows][cols]);
+int isColliding(int board[rows][cols],int s[2], int ship_size, int dir);
+void build_board(int board[rows][cols]);
+void make_guess(int board[rows][cols], int guess[rows][cols]);
