@@ -8,7 +8,8 @@ int main() {
   int board[rows][cols];
   int guess[rows][cols];
   //make_board(guess);
-  //build_board(board);
+  build_board(board);
   //make_guess(board,guess);
+  //print_board(board);
   return 0;
 }

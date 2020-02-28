@@ -168,6 +168,7 @@ void make_guess(int board[rows][cols], int guess[rows][cols]) {
   s[1] = input[1]-'1';
   if(isColliding(board,s,1,1)) {
     guess[s[1]][s[0]] = -1;
+    board[s[1]][s[0]] = -1;
   } else {
     guess[s[1]][s[0]] = -2;
   }
