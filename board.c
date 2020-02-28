@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "board.h"
 
 /*
 Make_board creates and populates a 9x11 board with zeros
@@ -153,15 +151,4 @@ void build_board(int *board, int rows, int cols) {
   }
   print_board(board, rows, cols);
   printf("Done. Board Generated.\n");
-}
-
-/*
-The main function executes the above functions in
-order to create and print a board.
-*/
-int main() {
-  int rows = 9, cols = 11;
-  int *board = (int *)malloc(rows*cols*sizeof(int));
-  build_board(board, rows, cols);
-  return 0;
 }
