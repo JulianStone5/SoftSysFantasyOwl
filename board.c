@@ -1,7 +1,7 @@
 #include "board.h"
 
 int rows = 9;
-int cols = 9;
+int cols = 11;
 /*
 Make_board creates and populates a 9x11 board with zeros
 */
@@ -62,6 +62,13 @@ int get_size(int ship) {
     case 5:
       return 5;
       break;
+  }
+}
+
+void make_ship_counts(int ship_counts[5]) {
+  int i;
+  for(i = 0; i < 5; i++) {
+    ship_counts[i] = get_size(i+1);
   }
 }
 
@@ -159,14 +166,26 @@ void build_board(int board[rows][cols]) {
   printf("Done. Board Generated.\n");
 }
 
-void make_guess(int board[rows][cols], int guess[rows][cols]) {
+void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]) {
   int s[2];
   char input[5];
   printf("Guess? Options A1-K9: ");
   fgets(input, 5, stdin);
   s[0] = input[0]-'A';
   s[1] = input[1]-'1';
+  int valX = ((s[0] < cols) && (s[0] >= 0)) ? 1 : 0;
+  int valY = ((s[1] < rows) && (s[1] >= 0)) ? 1 : 0;
+  while(!valX || !valY) {
+    printf("Invalid Input");
+    printf("Guess? Options A1-K9: ");
+    fgets(input, 5, stdin);
+    s[0] = input[0]-'A';
+    s[1] = input[1]-'1';
+    int valX = ((s[0] < cols) && (s[0] >= 0)) ? 1 : 0;
+    int valY = ((s[1] < rows) && (s[1] >= 0)) ? 1 : 0;
+  }
   if(isColliding(board,s,1,1)) {
+    ship_counts[board[s[1]][s[0]]-1]--;
     guess[s[1]][s[0]] = -1;
     board[s[1]][s[0]] = -1;
   } else {
