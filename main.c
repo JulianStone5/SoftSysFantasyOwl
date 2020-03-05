@@ -6,6 +6,16 @@ typedef struct {
   int ship_counts[5];
 } Player;
 
+int hasLost(int ship_counts[5]) {
+  int i;
+  for(i = 0; i < 5; i++) {
+    if(ship_counts[i] != 0) {
+      return 0;
+    }
+  }
+  return 1;
+}
+
 /*
 The main function executes the above functions in
 order to create and print a board.
@@ -18,8 +28,29 @@ int main() {
   make_ship_counts(p1->ship_counts);
   make_ship_counts(p2->ship_counts);
   build_board(p1->board);
-  build_board(p1->board);
-  make_guess(p1->board,p2->guess,p1->ship_counts);
+  build_board(p2->board);
+  int playerTurn = 0;
+  while(!hasLost(p1->ship_counts) && !hasLost(p2->ship_counts)) {
+    if(!playerTurn) {
+      printf("Player 1's Turn\n");
+      print_board(p1->guess);
+      print_board(p1->board);
+      make_guess(p2->board, p1->guess, p2->ship_counts);
+      playerTurn = 1;
+    } else {
+      printf("Player 2's Turn\n");
+      print_board(p2->guess);
+      print_board(p2->board);
+      make_guess(p1->board, p2->guess, p1->ship_counts);
+      playerTurn = 0;
+    }
+  }
+  if(!playerTurn) {
+    printf("Player 2 Wins!\n");
+  } else {
+    printf("Player 1 Wins!\n");
+  }
+  //make_guess(p1->board,p2->guess,p1->ship_counts);
   //print_board(board);
   return 0;
 }

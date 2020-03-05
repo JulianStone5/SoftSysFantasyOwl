@@ -112,7 +112,7 @@ int isColliding(int board[rows][cols], int s[2], int ship_size, int dir) {
   int down = (dir == 2) ? 1 : 0;
   for(i = s[1]; i < s[1]+down*ship_size+right; i++) {
     for(j = s[0]; j < s[0]+right*ship_size+down; j++) {
-      if(board[i][j] != 0) {
+      if(board[i][j] > 0) {
         return 1;
       }
     }
@@ -185,11 +185,12 @@ void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]
     int valY = ((s[1] < rows) && (s[1] >= 0)) ? 1 : 0;
   }
   if(isColliding(board,s,1,1)) {
+    printf("Hit!\n");
     ship_counts[board[s[1]][s[0]]-1]--;
     guess[s[1]][s[0]] = -1;
     board[s[1]][s[0]] = -1;
   } else {
+    printf("Miss!\n");
     guess[s[1]][s[0]] = -2;
   }
-  print_board(guess);
 }
