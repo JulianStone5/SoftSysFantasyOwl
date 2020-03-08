@@ -13,4 +13,5 @@
     3. Allow for server monitoring and managing of gameplay: Casey May
 
 GitHub: https://github.com/JulianStone5/SoftSysFantasyOwl
+
 Trello: https://trello.com/b/hbnPjdwA/fantasyowl
