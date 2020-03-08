@@ -69,8 +69,9 @@ int main(int argc, char const *argv[])
 
     while (1)
     {
+      // makes sure that the socket set is empty
       FD_zero(&socket_set);
-
+      //
     }
     return 0;
 }
