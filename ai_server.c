@@ -4,19 +4,17 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <time.h>
 #define PORT 8080
-#define CLIENT_NUM 2
 
 int main(int argc, char const *argv[])
 {
-    // server_fd is master socket
-    int server_fd, new_socket, valread, client_socket[CLIENT_NUM], max_clients = CLIENT_NUM;
+    int server_fd, new_socket, valread;
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
     char *hello = "Hello from server";
-    fd_set socket_set;
 
     // Creating socket file descriptor
     // socket descriptor uses IP v 4 with TCP connection
@@ -26,25 +24,18 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-    //initialise all client_socket[] to 0 so not checked
-    for (i = 0; i < max_clients; i++)
-    {
-        client_socket[i] = 0;
-    }
-
-    // Forcefully attaching socket to the port 8080, creating a master socket
+    // Forcefully attaching socket to the port 8080
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
                                                   &opt, sizeof(opt)))
     {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
-    // socket type
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
 
-    // binding socket to the port 8080
+    // Forcefully attaching socket to the port 8080
     if (bind(server_fd, (struct sockaddr *)&address,
                                  sizeof(address))<0)
     {
@@ -62,15 +53,20 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
-    valread = read( new_socket , buffer, 1024);
-    printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
+    int i;
+    for(i = 0; i < 3; i++) {
+      int milli_seconds = 5000;
 
-    while (1)
-    {
-      FD_zero(&socket_set);
+    // Storing start time
+    clock_t start_time = clock();
 
+    // looping till required time is not achieved
+    while (clock() < start_time + milli_seconds)
+        ;
+      valread = read( new_socket , buffer, 1024);
+      printf("%s\n",buffer );
+      send(new_socket , hello , strlen(hello) , 0 );
+      printf("Hello message sent\n");
     }
     return 0;
 }
