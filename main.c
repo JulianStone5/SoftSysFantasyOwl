@@ -6,16 +6,6 @@ typedef struct {
   int ship_counts[5];
 } Player;
 
-int hasLost(int ship_counts[5]) {
-  int i;
-  for(i = 0; i < 5; i++) {
-    if(ship_counts[i] != 0) {
-      return 0;
-    }
-  }
-  return 1;
-}
-
 /*
 The main function executes the above functions in
 order to create and print a board.

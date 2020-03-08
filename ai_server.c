@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
-#include <time.h>
 #define PORT 8080
 
 int main(int argc, char const *argv[])
@@ -55,14 +54,6 @@ int main(int argc, char const *argv[])
     }
     int i;
     for(i = 0; i < 3; i++) {
-      int milli_seconds = 5000;
-
-    // Storing start time
-    clock_t start_time = clock();
-
-    // looping till required time is not achieved
-    while (clock() < start_time + milli_seconds)
-        ;
       valread = read( new_socket , buffer, 1024);
       printf("%s\n",buffer );
       send(new_socket , hello , strlen(hello) , 0 );

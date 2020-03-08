@@ -62,16 +62,50 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
-    valread = read( new_socket , buffer, 1024);
-    printf("%s\n",buffer );
-    send(new_socket , hello , strlen(hello) , 0 );
-    printf("Hello message sent\n");
+
+    //try to specify maximum of 2 pending connections for the master socket
+    if (listen(master_socket, 2) < 0)
+    {
+        perror("listen");
+        exit(EXIT_FAILURE);
+    }
+
+    //accept the incoming connection
+    addrlen = sizeof(address);
+    puts("Waiting for connections ...");
+
+    // valread = read( new_socket , buffer, 1024);
+    // printf("%s\n",buffer );
+    // send(new_socket , hello , strlen(hello) , 0 );
+    // printf("Hello message sent\n");
 
     while (1)
     {
       // makes sure that the socket set is empty
       FD_zero(&socket_set);
-      //
+      // adds master socket to set
+      FD_SET(master_socket, &socket_set);
+
+      max_sd = server_fd;
+
+      for ( i = 0 ; i < max_clients ; i++)
+      {
+          //socket descriptor
+          sd = client_socket[i];
+
+          //if valid socket descriptor then add to read list
+          if(sd > 0)
+              FD_SET( sd , &socket_set);
+
+          //finding the highest file descriptor for use in the select function
+          if(sd > max_sd)
+              max_sd = sd;
+      }
+      AFK_Check = select( max_sd + 1 , &socket_set , NULL , NULL , NULL);
+      if ((AFK_Check < 0) && (errno!=EINTR))
+        {
+            printf("select error");
+        }
     }
     return 0;
 }

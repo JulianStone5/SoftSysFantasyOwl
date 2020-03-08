@@ -194,3 +194,13 @@ void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]
     guess[s[1]][s[0]] = -2;
   }
 }
+
+int hasLost(int ship_counts[5]) {
+  int i;
+  for(i = 0; i < 5; i++) {
+    if(ship_counts[i] != 0) {
+      return 0;
+    }
+  }
+  return 1;
+}

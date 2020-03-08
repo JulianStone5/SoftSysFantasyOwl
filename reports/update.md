@@ -11,3 +11,6 @@
     1. Write a rudimentary game AI in case of lower bound: Julian Stone
     2. Open up server to allow for multiple client access points: Jack Mao
     3. Allow for server monitoring and managing of gameplay: Casey May
+
+GitHub: https://github.com/JulianStone5/SoftSysFantasyOwl
+Trello: https://trello.com/b/hbnPjdwA/fantasyowl
