@@ -42,6 +42,34 @@ void print_board(int board[rows][cols]) {
   }
 }
 
+void getBoardString(int board[rows][cols], char board_str[1000]) {
+  int i,j;
+  char temp[5];
+  for(j = 0; j < cols; j++) {
+    sprintf(temp,"  %c ", (char)(j+'A'));
+    strcat(board_str, temp);
+  }
+  strcat(board_str, " \n");
+  for(i = 0; i < rows; i++) {
+    sprintf(temp,"%d ",i+1);
+    strcat(board_str, temp);
+    for(j = 0; j < cols; j++) {
+      int val = board[i][j];
+      if(val == 0) {
+        strcat(board_str, "| ~ ");
+      } else if(val == -1) {
+        strcat(board_str, "| X ");
+      } else if(val == -2) {
+        strcat(board_str, "| 0 ");
+      } else {
+        sprintf(temp,"| %d ",val);
+        strcat(board_str, temp);
+      }
+    }
+    strcat(board_str, "|\n");
+  }
+}
+
 /*
 Converts ships number label to ship size
 */
@@ -103,6 +131,20 @@ int getDir(char * input) {
   return dir;
 }
 
+int getDir_server(char * input, int new_socket) {
+  char temp[50] = "Direction? Right (1) or Down (2): ";
+  send(new_socket, temp, strlen(temp),0);
+  int valread = read( new_socket , input, 5);
+  int dir = atoi(input);
+  while(dir != 1 && dir != 2) {
+    sprintf(temp, "%s","Invalid input\nDirection? Right (1) or Down (2): ");
+    send(new_socket, temp, strlen(temp),0);
+    memset(input,0,strlen(input));
+    valread = read( new_socket , input, 5);
+    dir = atoi(input);
+  }
+  return dir;
+}
 /*
 Detect if a new ship would be colliding with existing ships
 */
@@ -156,6 +198,31 @@ void build_board(int board[rows][cols]) {
     printf("\n");
     int ship_size = get_size(i);
     printf("Let's place Ship %d of size %d...\n", i, ship_size);
+    int dir = getDir(input);
+    int s[2];
+    getStart(board,input,s,ship_size,dir);
+    add_ship(board,i,s[0],s[1],dir);
+    printf("\n");
+  }
+  print_board(board);
+  printf("Done. Board Generated.\n");
+}
+
+void build_board_server(int board[rows][cols], int new_socket) {
+  make_board(board);
+  int i;
+  char input[5];
+  char temp[100];
+  sprintf(temp,"%s","Generating board...\n\n");
+  send(new_socket , temp , strlen(temp) , 0 );
+  for(i = 1; i <= 5; i++) {
+    char board_str[100];
+    getBoardString(board,board_str);
+    strcat(board_str,"\n");
+    send(new_socket,board_str,strlen(temp),0);
+    int ship_size = get_size(i);
+    sprintf(temp,"Let's place Ship %d of size %d...\n", i, ship_size);
+    send(new_socket,board_str,strlen(temp),0);
     int dir = getDir(input);
     int s[2];
     getStart(board,input,s,ship_size,dir);

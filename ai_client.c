@@ -45,10 +45,16 @@ int main(int argc, char const *argv[])
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer );
 
+    memset(buffer,0,strlen(buffer));
     valread = read( sock , buffer, 1024);
-    printf("%s\n",buffer );
+    printf("%s\n",buffer);
     char input[5];
-    fgets(input, 5, stdin);
-    send(sock , input , strlen(input) , 0 );
+    fgets(input,5,stdin);
+    send(sock,input,strlen(input),0);
+    memset(buffer,0,strlen(buffer));
+    valread = read( sock , buffer, 1024);
+    while(valread != 0) {
+      
+    }
     return 0;
 }

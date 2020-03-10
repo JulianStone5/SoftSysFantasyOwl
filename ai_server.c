@@ -1,10 +1,11 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <string.h>
+#include "board.h"
 #define PORT 8080
+
+typedef struct {
+  int board[9][11];
+  int guess[9][11];
+  int ship_counts[5];
+} Player;
 
 int main(int argc, char const *argv[])
 {
@@ -57,8 +58,18 @@ int main(int argc, char const *argv[])
     send(new_socket , hello , strlen(hello) , 0 );
     printf("Hello message sent\n");
 
-    send(new_socket, "Message: ", strlen("Message: "),0);
-    valread = read( new_socket , buffer, 1024);
-    printf("%s\n",buffer );
+    char * input = malloc(5*sizeof(char));
+    int a = getDir_server(input, new_socket);
+    // Player *p1 = malloc(sizeof(Player));
+    // Player *p2 = malloc(sizeof(Player));
+    // make_board(p1->guess);
+    // make_board(p2->guess);
+    // make_ship_counts(p1->ship_counts);
+    // make_ship_counts(p2->ship_counts);
+    //
+    // char * board_str = malloc(1000* sizeof(char));
+    // getBoardString(p1->guess,board_str);
+    // printf("%s",board_str);
+    //send(new_socket, board_str, strlen(board_str),0);
     return 0;
 }
