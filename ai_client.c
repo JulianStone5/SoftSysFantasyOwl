@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
     char *hello = "Hello from client";
     char buffer[1024] = {0};
     if (argc <2) { //checks that user input server ip address
-      printf("Missing server ip address");
+      printf("Missing server ip address\n");
       exit(1);
     }
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -44,5 +44,11 @@ int main(int argc, char const *argv[])
     printf("Hello message sent\n");
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer );
+
+    valread = read( sock , buffer, 1024);
+    printf("%s\n",buffer );
+    char input[5];
+    fgets(input, 5, stdin);
+    send(sock , input , strlen(input) , 0 );
     return 0;
 }
