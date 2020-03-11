@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>
+#include <time.h>
 
 int rows, cols;
 void make_board(int board[rows][cols]);
@@ -16,3 +17,5 @@ void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]
 int hasLost(int ship_counts[5]);
 void getBoardString(int board[rows][cols], char * board_str);
 int getDir_server(char * input, int new_socket);
+void getDir_client(int sock);
+void delay(int milsec);

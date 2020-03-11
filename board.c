@@ -2,6 +2,12 @@
 
 int rows = 9;
 int cols = 11;
+
+void delay(int milsec){
+  clock_t startTime = clock();
+  while(clock() < (startTime + milsec));
+}
+
 /*
 Make_board creates and populates a 9x11 board with zeros
 */
@@ -132,6 +138,7 @@ int getDir(char * input) {
 }
 
 int getDir_server(char * input, int new_socket) {
+  delay(500);
   char temp[50] = "Direction? Right (1) or Down (2): ";
   send(new_socket, temp, strlen(temp),0);
   int valread = read( new_socket , input, 5);
@@ -141,10 +148,26 @@ int getDir_server(char * input, int new_socket) {
     send(new_socket, temp, strlen(temp),0);
     memset(input,0,strlen(input));
     valread = read( new_socket , input, 5);
-    dir = atoi(input);
+    sprintf(temp, "%c", input[0]);
+    dir = atoi(temp);
   }
   return dir;
 }
+
+void getDir_client(int sock) {
+  char b[1024];
+  //memset(b,0,strlen(b));
+  int valread = read( sock , b, 1024);
+  while(strcmp(b,"Done") != 0) {
+    printf("%s\n",b);
+    char input[100];
+    fgets(input,100,stdin);
+    send(sock,input,strlen(input),0);
+    memset(b,0,strlen(b));
+    valread = read( sock , b, 1024);
+  }
+}
+
 /*
 Detect if a new ship would be colliding with existing ships
 */
@@ -223,7 +246,7 @@ void build_board_server(int board[rows][cols], int new_socket) {
     int ship_size = get_size(i);
     sprintf(temp,"Let's place Ship %d of size %d...\n", i, ship_size);
     send(new_socket,board_str,strlen(temp),0);
-    int dir = getDir(input);
+    int dir = getDir_server(input,new_socket);
     int s[2];
     getStart(board,input,s,ship_size,dir);
     add_ship(board,i,s[0],s[1],dir);

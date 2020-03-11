@@ -60,6 +60,7 @@ int main(int argc, char const *argv[])
 
     char * input = malloc(5*sizeof(char));
     int a = getDir_server(input, new_socket);
+    send(new_socket , "Done" , strlen("Done") , 0 );
     // Player *p1 = malloc(sizeof(Player));
     // Player *p2 = malloc(sizeof(Player));
     // make_board(p1->guess);
