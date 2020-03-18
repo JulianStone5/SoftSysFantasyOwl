@@ -58,9 +58,13 @@ int main(int argc, char const *argv[])
     send(new_socket , hello , strlen(hello) , 0 );
     printf("Hello message sent\n");
 
-    char * input = malloc(5*sizeof(char));
-    int a = getDir_server(input, new_socket);
-    send(new_socket , "Done" , strlen("Done") , 0 );
+    // char * input = malloc(5*sizeof(char));
+    // int s[2];
+    Player *p1 = malloc(sizeof(Player));
+    //make_board(p1->board);
+    build_board_server(p1->board,new_socket);
+    //getStart_server(p1->board,input,s,3,1,new_socket);
+    //int a = getDir_server(input, new_socket);
     // Player *p1 = malloc(sizeof(Player));
     // Player *p2 = malloc(sizeof(Player));
     // make_board(p1->guess);

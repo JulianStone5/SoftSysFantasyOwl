@@ -46,7 +46,7 @@ int main(int argc, char const *argv[])
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer );
 
-    
-    getDir_client(sock);
+    build_board_client(sock);
+    //getDir_client(sock);
     return 0;
 }
