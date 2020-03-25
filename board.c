@@ -309,7 +309,6 @@ void build_board_client(int sock) {
   valread = read( sock , b, 1024);
   b[480] = '\0';
   printf("%s\n",b);
-  printf("%ld\n",strlen(b));
   printf("Done. Board Generated.\n");
 }
 
