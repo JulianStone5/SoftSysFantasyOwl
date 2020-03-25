@@ -47,6 +47,10 @@ int main(int argc, char const *argv[])
     printf("%s\n",buffer );
 
     build_board_client(sock);
-    //getDir_client(sock);
+    // int i;
+    // for(i = 1; i <= 5; i++) {
+    //   getDir_client(sock);
+    //   getDir_client(sock);
+    // }
     return 0;
 }

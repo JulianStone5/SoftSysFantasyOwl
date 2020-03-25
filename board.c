@@ -261,17 +261,19 @@ void build_board_server(int board[rows][cols], int new_socket) {
   int i;
   char input[5];
   char temp[100];
+  delay(1000);
   sprintf(temp,"%s","Generating board...\n\n");
   send(new_socket , temp , strlen(temp) , 0 );
-  delay(1000);
   for(i = 1; i <= 5; i++) {
-    char board_str[100];
-    getBoardString(board,board_str);
-    strcat(board_str,"\n");
-    send(new_socket,board_str,strlen(board_str),0);
+    // char board_str[100];
+    // getBoardString(board,board_str);
+    // strcat(board_str,"\n");
+    // send(new_socket,board_str,strlen(board_str),0);
+    // delay(1000);
     int ship_size = get_size(i);
-    sprintf(temp,"Let's place Ship %d of size %d...\n", i, ship_size);
-    send(new_socket,temp,strlen(temp),0);
+    // sprintf(temp,"Let's place Ship %d of size %d...\n", i, ship_size);
+    // send(new_socket,temp,strlen(temp),0);
+    // delay(1000);
     int dir = getDir_server(input,new_socket);
     int s[2];
     getStart_server(board,input,s,ship_size,dir, new_socket);
@@ -279,6 +281,7 @@ void build_board_server(int board[rows][cols], int new_socket) {
   }
   char * board_str = malloc(1000* sizeof(char));
   getBoardString(board,board_str);
+  delay(1000);
   send(new_socket, board_str, strlen(board_str),0);
   //print_board(board);
   //printf("Done. Board Generated.\n");
@@ -290,19 +293,23 @@ void build_board_client(int sock) {
   printf("%s",b);
   int i;
   for(i = 1; i <= 5; i++) {
-    memset(b,0,strlen(b));
-    valread = read( sock , b, 1024);
-    printf("%s",b);
-    memset(b,0,strlen(b));
-    valread = read( sock , b, 1024);
-    printf("%s",b);
+    // memset(b,0,strlen(b));
+    // valread = read( sock , b, 1024);
+    // printf("%s",b);
+    // //printf("hi\n");
+    // memset(b,0,strlen(b));
+    // valread = read( sock , b, 1024);
+    // printf("%s",b);
+    // //printf("bye\n");
     getDir_client(sock);
     getDir_client(sock);
     printf("\n");
   }
   memset(b,0,strlen(b));
   valread = read( sock , b, 1024);
+  b[480] = '\0';
   printf("%s\n",b);
+  printf("%ld\n",strlen(b));
   printf("Done. Board Generated.\n");
 }
 

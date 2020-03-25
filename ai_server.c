@@ -61,9 +61,13 @@ int main(int argc, char const *argv[])
     // char * input = malloc(5*sizeof(char));
     // int s[2];
     Player *p1 = malloc(sizeof(Player));
-    //make_board(p1->board);
+    make_board(p1->board);
+    // int i;
+    // for(i = 1; i <= 5; i++) {
+    //   int dir = getDir_server(input, new_socket);
+    //   getStart_server(p1->board,input,s,3,dir,new_socket);
+    // }
     build_board_server(p1->board,new_socket);
-    //getStart_server(p1->board,input,s,3,1,new_socket);
     //int a = getDir_server(input, new_socket);
     // Player *p1 = malloc(sizeof(Player));
     // Player *p2 = malloc(sizeof(Player));
