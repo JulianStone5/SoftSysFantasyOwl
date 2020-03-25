@@ -284,7 +284,7 @@ void build_board_server(int board[rows][cols], int new_socket) {
     add_ship(board,i,s[0],s[1],dir);
   }
   char * board_str = malloc(1000* sizeof(char));
-  //TODO: free MALLOC
+  //TODO:   free MALLOC
   getBoardString(board,board_str);
   delay(1000);
   send(new_socket, board_str, strlen(board_str),0);
