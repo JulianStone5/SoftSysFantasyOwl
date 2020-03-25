@@ -140,12 +140,14 @@ int getDir(char * input) {
 
 int getDir_server(char * input, int new_socket) {
   delay(1000);
-  char temp[50] = "Direction? Right (1) or Down (2): ";
+  char *temp = malloc(50*sizeof(char));
+  sprintf(temp,"%s","Direction? Right (1) or Down (2): ");
   send(new_socket, temp, strlen(temp),0);
   int valread = read( new_socket , input, 5);
   int dir = atoi(input);
   while(dir != 1 && dir != 2) {
     sprintf(temp, "%s","Invalid input\nDirection? Right (1) or Down (2): ");
+    delay(1000);
     send(new_socket, temp, strlen(temp),0);
     memset(input,0,strlen(input));
     valread = read( new_socket , input, 5);
@@ -156,11 +158,11 @@ int getDir_server(char * input, int new_socket) {
   return dir;
 }
 
-void getDir_client(int sock) {
-  char b[1024];
+void getInfo(int sock) {
+  char *b = malloc(1024*sizeof(char));
   int valread = read( sock , b, 1024);
   while(strcmp(b,"Done") != 0) {
-    printf("%s\n",b);
+    printf("%s",b);
     char input[100];
     fgets(input,100,stdin);
     send(sock,input,strlen(input),0);
@@ -211,7 +213,8 @@ void getStart(int board[rows][cols],char * input, int s[2],int ship_size, int di
 
 void getStart_server(int board[rows][cols],char * input, int s[2],int ship_size, int dir, int new_socket) {
   delay(1000);
-  char temp[100] = "Starting Coordinate? Options A1-K9: ";
+  char *temp = malloc(100*sizeof(char));
+  sprintf(temp,"%s", "Starting Coordinate? Options A1-K9: ");
   send(new_socket, temp, strlen(temp),0);
   int valread = read( new_socket , input, 5);
   s[0] = input[0]-'A';
@@ -268,12 +271,12 @@ void build_board_server(int board[rows][cols], int new_socket) {
     // char board_str[100];
     // getBoardString(board,board_str);
     // strcat(board_str,"\n");
-    // send(new_socket,board_str,strlen(board_str),0);
     // delay(1000);
+    // send(new_socket,board_str,strlen(board_str),0);
     int ship_size = get_size(i);
     // sprintf(temp,"Let's place Ship %d of size %d...\n", i, ship_size);
-    // send(new_socket,temp,strlen(temp),0);
     // delay(1000);
+    // send(new_socket,temp,strlen(temp),0);
     int dir = getDir_server(input,new_socket);
     int s[2];
     getStart_server(board,input,s,ship_size,dir, new_socket);
@@ -301,8 +304,8 @@ void build_board_client(int sock) {
     // valread = read( sock , b, 1024);
     // printf("%s",b);
     // //printf("bye\n");
-    getDir_client(sock);
-    getDir_client(sock);
+    getInfo(sock);
+    getInfo(sock);
     printf("\n");
   }
   memset(b,0,strlen(b));
@@ -312,6 +315,7 @@ void build_board_client(int sock) {
   printf("Done. Board Generated.\n");
 }
 
+// be wary of long wrong inputs for now ******
 void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]) {
   int s[2];
   char input[5];

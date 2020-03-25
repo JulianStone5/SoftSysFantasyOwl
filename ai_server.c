@@ -63,25 +63,8 @@ int main(int argc, char const *argv[])
     Player *p1 = malloc(sizeof(Player));
     Player *p2 = malloc(sizeof(Player));
 
-    // int i;
-    // for(i = 1; i <= 5; i++) {
-    //   int dir = getDir_server(input, new_socket);
-    //   getStart_server(p1->board,input,s,3,dir,new_socket);
-    // }
-    printf("Waiting for Player 1 Board Generation");
+    printf("Waiting for Player 1 Board Generation\n");
     build_board_server(p1->board,new_socket);
     build_board(p2->board);
-    //int a = getDir_server(input, new_socket);
-    // Player *p1 = malloc(sizeof(Player));
-    // Player *p2 = malloc(sizeof(Player));
-    // make_board(p1->guess);
-    // make_board(p2->guess);
-    // make_ship_counts(p1->ship_counts);
-    // make_ship_counts(p2->ship_counts);
-    //
-    // char * board_str = malloc(1000* sizeof(char));
-    // getBoardString(p1->guess,board_str);
-    // printf("%s",board_str);
-    //send(new_socket, board_str, strlen(board_str),0);
     return 0;
 }
