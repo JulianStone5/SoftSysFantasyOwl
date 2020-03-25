@@ -60,11 +60,15 @@ int main(int argc, char const *argv[])
 
     // char * input = malloc(5*sizeof(char));
     // int s[2];
-    Player *p1 = malloc(sizeof(Player));
-    Player *p2 = malloc(sizeof(Player));
+    Player *client = malloc(sizeof(Player));
+    Player *server = malloc(sizeof(Player));
+    make_ship_counts(client->ship_counts);
+    make_ship_counts(server->ship_counts);
+    make_board(client->guess);
 
     printf("Waiting for Player 1 Board Generation\n");
-    build_board_server(p1->board,new_socket);
-    build_board(p2->board);
+    build_board(server->board);
+    make_guess_server(server->board,client->guess,server->ship_counts,new_socket);
+    //build_board(p2->board);
     return 0;
 }

@@ -262,8 +262,9 @@ void build_board(int board[rows][cols]) {
 void build_board_server(int board[rows][cols], int new_socket) {
   make_board(board);
   int i;
-  char input[5];
-  char temp[100];
+  char *input = malloc(5*sizeof(char));
+  char *temp = malloc(100*sizeof(char));
+  //TODO: free malloc space
   delay(1000);
   sprintf(temp,"%s","Generating board...\n\n");
   send(new_socket , temp , strlen(temp) , 0 );
@@ -283,6 +284,7 @@ void build_board_server(int board[rows][cols], int new_socket) {
     add_ship(board,i,s[0],s[1],dir);
   }
   char * board_str = malloc(1000* sizeof(char));
+  //TODO: free MALLOC
   getBoardString(board,board_str);
   delay(1000);
   send(new_socket, board_str, strlen(board_str),0);
@@ -291,7 +293,7 @@ void build_board_server(int board[rows][cols], int new_socket) {
 }
 
 void build_board_client(int sock) {
-  char b[1024];
+  char *b = malloc(1024*sizeof(char));
   int valread = read( sock , b, 1024);
   printf("%s",b);
   int i;
@@ -343,6 +345,48 @@ void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]
     printf("Miss!\n");
     guess[s[1]][s[0]] = -2;
   }
+}
+
+void make_guess_server(int board[rows][cols], int guess[rows][cols], int ship_counts[5], int new_socket) {
+  int s[2];
+  char *input = malloc(5*sizeof(char));
+  char *temp = malloc(100*sizeof(char));
+  //TODO:   remember to free mallocked space
+  sprintf(temp,"%s","Guess? Options A1-K9: ");
+  send(new_socket, temp, strlen(temp),0);
+  int valread = read( new_socket , input, 5);
+  s[0] = input[0]-'A';
+  s[1] = input[1]-'1';
+  int valX = ((s[0] < cols) && (s[0] >= 0)) ? 1 : 0;
+  int valY = ((s[1] < rows) && (s[1] >= 0)) ? 1 : 0;
+  while(!valX || !valY) {
+    sprintf(temp,"%s","Invalid Input.\nGuess? Options A1-K9: ");
+    send(new_socket, temp, strlen(temp),0);
+    int valread = read( new_socket , input, 5);
+    s[0] = input[0]-'A';
+    s[1] = input[1]-'1';
+    int valX = ((s[0] < cols) && (s[0] >= 0)) ? 1 : 0;
+    int valY = ((s[1] < rows) && (s[1] >= 0)) ? 1 : 0;
+  }
+  send(new_socket , "Done" , strlen("Done") , 0 );
+  if(isColliding(board,s,1,1)) {
+    sprintf(temp,"%s","Hit!\n");
+    send(new_socket, temp, strlen(temp),0);
+    ship_counts[board[s[1]][s[0]]-1]--;
+    guess[s[1]][s[0]] = -1;
+    board[s[1]][s[0]] = -1;
+  } else {
+    sprintf(temp,"%s","Hit!\n");
+    send(new_socket, temp, strlen(temp),0);
+    guess[s[1]][s[0]] = -2;
+  }
+}
+
+void make_guess_client(int sock) {
+  getInfo(sock);
+  char *b = malloc(1024*sizeof(char));
+  int valread = read( sock , b, 1024);
+  printf("%s",b);
 }
 
 int hasLost(int ship_counts[5]) {
