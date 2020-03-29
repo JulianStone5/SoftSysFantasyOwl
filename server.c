@@ -1,22 +1,20 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <stdlib.h>
-#include <netinet/in.h>
-#include <string.h>
+#include "network_board.h"
 #define PORT 8080
-#define CLIENT_NUM 2
+
+typedef struct {
+  int board[9][11];
+  int guess[9][11];
+  int ship_counts[5];
+} Player;
 
 int main(int argc, char const *argv[])
 {
-    // server_fd is master socket
-    int server_fd, new_socket, valread, client_socket[CLIENT_NUM], max_clients = CLIENT_NUM;
+    int server_fd, new_socket, valread;
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
     char *hello = "Hello from server";
-    fd_set socket_set;
 
     // Creating socket file descriptor
     // socket descriptor uses IP v 4 with TCP connection
@@ -26,25 +24,18 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-    //initialise all client_socket[] to 0 so not checked
-    for (i = 0; i < max_clients; i++)
-    {
-        client_socket[i] = 0;
-    }
-
-    // Forcefully attaching socket to the port 8080, creating a master socket
+    // Forcefully attaching socket to the port 8080
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT,
                                                   &opt, sizeof(opt)))
     {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }
-    // socket type
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
 
-    // binding socket to the port 8080
+    // Forcefully attaching socket to the port 8080
     if (bind(server_fd, (struct sockaddr *)&address,
                                  sizeof(address))<0)
     {
@@ -62,50 +53,61 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
+    valread = read( new_socket , buffer, 1024);
+    printf("%s\n",buffer );
+    send(new_socket , hello , strlen(hello) , 0 );
+    printf("Hello message sent\n");
 
-    //try to specify maximum of 2 pending connections for the master socket
-    if (listen(master_socket, 2) < 0)
-    {
-        perror("listen");
-        exit(EXIT_FAILURE);
-    }
+    Player *client = malloc(sizeof(Player));
+    Player *server = malloc(sizeof(Player));
+    make_ship_counts(client->ship_counts);
+    make_ship_counts(server->ship_counts);
+    make_board(client->guess);
+    make_board(server->guess);
 
-    //accept the incoming connection
-    addrlen = sizeof(address);
-    puts("Waiting for connections ...");
+    printf("Waiting for Player 1 Board Generation\n");
+    build_board_server(client->board,new_socket);
+    usleep(wait_time);
+    sprintf(buffer,"%s","Waiting for Player 2 Board Generation");
+    send(new_socket,buffer,strlen(buffer),0);
+    build_board(server->board);
 
-    // valread = read( new_socket , buffer, 1024);
-    // printf("%s\n",buffer );
-    // send(new_socket , hello , strlen(hello) , 0 );
-    // printf("Hello message sent\n");
-
-    while (1)
-    {
-      // makes sure that the socket set is empty
-      FD_zero(&socket_set);
-      // adds master socket to set
-      FD_SET(master_socket, &socket_set);
-
-      max_sd = server_fd;
-
-      for ( i = 0 ; i < max_clients ; i++)
-      {
-          //socket descriptor
-          sd = client_socket[i];
-
-          //if valid socket descriptor then add to read list
-          if(sd > 0)
-              FD_SET( sd , &socket_set);
-
-          //finding the highest file descriptor for use in the select function
-          if(sd > max_sd)
-              max_sd = sd;
+    int playerTurn = 0;
+    while(!hasLost(client->ship_counts) && !hasLost(server->ship_counts)) {
+      usleep(wait_time);
+      send(new_socket,"Nope",strlen("Nope"),0);
+      if(!playerTurn) {
+        printf("Player 1's Turn\n");
+        usleep(wait_time);
+        send(new_socket,"Player 1's Turn", strlen("Player 1's Turn"),0);
+        char * board_str = malloc(1000* sizeof(char));
+        getBoardString(client->guess,board_str);
+        usleep(wait_time);
+        send(new_socket, board_str, strlen(board_str),0);
+        memset(board_str, 0, strlen(board_str));
+        getBoardString(client->board,board_str);
+        usleep(wait_time);
+        send(new_socket, board_str, strlen(board_str),0);
+        make_guess_server(server->board, client->guess, server->ship_counts,new_socket);
+        playerTurn = 1;
+      } else {
+        printf("Player 2's Turn\n");
+        print_board(server->guess);
+        printf("\n");
+        print_board(server->board);
+        make_guess(client->board, server->guess, client->ship_counts);
+        playerTurn = 0;
       }
-      AFK_Check = select( max_sd + 1 , &socket_set , NULL , NULL , NULL);
-      if ((AFK_Check < 0) && (errno!=EINTR))
-        {
-            printf("select error");
-        }
+    }
+    usleep(wait_time);
+    send(new_socket,"Done",strlen("Done"),0);
+    usleep(wait_time);
+    if(!playerTurn) {
+      printf("Player 2 Wins!\n");
+      send(new_socket,"Player 2 Wins!",strlen("Player 2 Wins!"),0);
+    } else {
+      printf("Player 1 Wins!\n");
+      send(new_socket,"Player 1 Wins!",strlen("Player 1 Wins!"),0);
     }
     return 0;
 }
