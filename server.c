@@ -96,6 +96,7 @@ int main(int argc, char const *argv[])
         print_board(server->guess);
         printf("\n");
         print_board(server->board);
+        printf("\n");
         make_guess(client->board, server->guess, client->ship_counts);
         playerTurn = 0;
       }
