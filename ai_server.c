@@ -58,17 +58,51 @@ int main(int argc, char const *argv[])
     send(new_socket , hello , strlen(hello) , 0 );
     printf("Hello message sent\n");
 
-    // char * input = malloc(5*sizeof(char));
-    // int s[2];
     Player *client = malloc(sizeof(Player));
     Player *server = malloc(sizeof(Player));
     make_ship_counts(client->ship_counts);
     make_ship_counts(server->ship_counts);
     make_board(client->guess);
+    make_board(server->guess);
 
     printf("Waiting for Player 1 Board Generation\n");
+    build_board_server(client->board,new_socket);
+    delay(1000);
+    sprintf(buffer,"%s","Waiting for Player 2 Board Generation");
+    send(new_socket,buffer,strlen(buffer),0);
     build_board(server->board);
-    make_guess_server(server->board,client->guess,server->ship_counts,new_socket);
+
+    int playerTurn = 0;
+    while(!hasLost(client->ship_counts) && !hasLost(server->ship_counts)) {
+      delay(1000);
+      send(new_socket,"Nope",strlen("Nope"),0);
+      if(!playerTurn) {
+        printf("Player 1's Turn\n");
+        //print_board(p1->guess);
+        //print_board(p1->board);
+        make_guess_server(server->board, client->guess, server->ship_counts,new_socket);
+        playerTurn = 1;
+      } else {
+        printf("Player 2's Turn\n");
+        //print_board(p2->guess);
+        //print_board(p2->board);
+        make_guess(client->board, server->guess, client->ship_counts);
+        playerTurn = 0;
+      }
+    }
+    delay(1000);
+    send(new_socket,"Done",strlen("Done"),0);
+    delay(1000);
+    if(!playerTurn) {
+      printf("Player 2 Wins!\n");
+      send(new_socket,"Player 2 Wins!",strlen("Player 2 Wins!"),0);
+    } else {
+      printf("Player 1 Wins!\n");
+      send(new_socket,"Player 1 Wins!",strlen("Player 1 Wins!"),0);
+    }
+
+    //
+    //make_guess_server(server->board,client->guess,server->ship_counts,new_socket);
     //build_board(p2->board);
     return 0;
 }

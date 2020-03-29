@@ -46,8 +46,27 @@ int main(int argc, char const *argv[])
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer );
 
+    build_board_client(sock);
+    memset(buffer,0,strlen(buffer));
+    valread = read( sock , buffer, 1024);
+    printf("%s\n",buffer );
+
+    while(strcmp(buffer,"Done") != 0) {
+      memset(buffer,0,strlen(buffer));
+      valread = read( sock , buffer, 1024);
+      if(strcmp(buffer,"Done") == 0) {
+        break;
+      }
+      make_guess_client(sock);
+      memset(buffer,0,strlen(buffer));
+      valread = read( sock , buffer, 1024);
+    }
+
+    memset(buffer,0,strlen(buffer));
+    valread = read( sock , buffer, 1024);
+    printf("%s\n",buffer );
     //build_board_client(sock);
-    make_guess_client(sock);
+    //make_guess_client(sock);
     // int i;
     // for(i = 1; i <= 5; i++) {
     //   getDir_client(sock);

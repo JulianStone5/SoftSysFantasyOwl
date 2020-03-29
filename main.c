@@ -14,14 +14,14 @@ int main() {
   // allocate memory for player1 (server side) and player2 (client)
   Player *p1 = malloc(sizeof(Player));
   Player *p2 = malloc(sizeof(Player));
-
-
   make_board(p1->guess);
   make_board(p2->guess);
   make_ship_counts(p1->ship_counts);
   make_ship_counts(p2->ship_counts);
+
   build_board(p1->board);
   build_board(p2->board);
+
   int playerTurn = 0;
   while(!hasLost(p1->ship_counts) && !hasLost(p2->ship_counts)) {
     if(!playerTurn) {
