@@ -72,6 +72,7 @@ int main(int argc, char const *argv[])
     send(new_socket,buffer,strlen(buffer),0);
     build_board(server->board);
 
+    char * board_str = malloc(1000* sizeof(char));
     int playerTurn = 0;
     while(!hasLost(client->ship_counts) && !hasLost(server->ship_counts)) {
       usleep(wait_time);
@@ -80,7 +81,7 @@ int main(int argc, char const *argv[])
         printf("Player 1's Turn\n");
         usleep(wait_time);
         send(new_socket,"Player 1's Turn", strlen("Player 1's Turn"),0);
-        char * board_str = malloc(1000* sizeof(char));
+        memset(board_str, 0, strlen(board_str));
         getBoardString(client->guess,board_str);
         usleep(wait_time);
         send(new_socket, board_str, strlen(board_str),0);
