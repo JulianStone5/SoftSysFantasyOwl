@@ -1,29 +1,29 @@
 # Battleship.net
 ### Jack Mao, Casey May, Julian Stone
 
-Casey
 ## Goals
+Casey
 self explanatory
 
-Casey
 ## Resources
+Casey
 previous projects stuff
 geeks for geeks socket programming
 
-Jack
 ## What Was Done
+Jack
 explain game
 explain network stuff
 show game working (screenshot)
 
-Jack
 ## Design Decision
+Jack
 pivot from two client/one server to one client/one server
 
-Julian
 ## Code Snippets
+Julian
 Network: basic socket stuff
 Data Storage: struct and storing board
 
-Casey
 ## Reflection
+Casey
