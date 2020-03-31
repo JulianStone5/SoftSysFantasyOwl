@@ -30,7 +30,7 @@ pivot from two client/one server to one client/one server
 ## Code Snippets
 Julian
 
-Network: basic socket stuff
+Network: basic socket stuff, delays
 
 Data Storage: struct and storing board
 
