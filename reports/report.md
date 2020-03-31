@@ -4,7 +4,7 @@
 ## Goals
 Casey
 
-self explanatory
+self explanatory, teletype
 
 ## Resources
 Casey
@@ -26,6 +26,8 @@ show game working (screenshot)
 Jack
 
 pivot from two client/one server to one client/one server
+
+- time and overscoped, not necessary given scope, only need two users, etc
 
 ## Code Snippets
 Julian
