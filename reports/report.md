@@ -48,11 +48,9 @@ The struct is called Player and it stores 2 two-dimensional arrays, one for the 
 
 ### Network Implementation
 Once we had the data structure situated, we needed to move onto getting two computers to communicate using a socket connection. The most basic implementation is quite standard and can be found in the resources listed above. For the sake of ease, below are two segments of the server and client code that are important to establishing the connection.
-
 #### Server
-
 ```c
-if (bind(server_fd, (struct sockaddr *)&address,
+if (bind(server_fd, (struct sockaddr * )&address,
                              sizeof(address))<0)
 {
     perror("bind failed");
@@ -63,16 +61,14 @@ if (listen(server_fd, 3) < 0)
     perror("listen");
     exit(EXIT_FAILURE);
 }
-if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
+if ((new_socket = accept(server_fd, (struct sockaddr * )&address,
                    (socklen_t*)&addrlen))<0)
 {
     perror("accept");
     exit(EXIT_FAILURE);
 }
 ```
-
 #### Client
-
 ```c
 if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
 {
@@ -80,12 +76,15 @@ if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
     return -1;
 }
 
-if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+if (connect(sock, (struct sockaddr * )&serv_addr, sizeof(serv_addr)) < 0)
 {
     printf("\nConnection Failed \n");
     return -1;
 }
 ```
+The server code above is used to establish a new socket on a defined port on the IP address of the computer that is running the server. Once created, the socket waits for any possible connections. Upon finding a connection, it will accept the connection assuming the client trying to connect has the correct address credentials. For the client side, all it needs to do is validate the address given by the user then try and connect to the server hosting the socket.
+
+Once the connection has been made between server and client, all that needs to be done at the minimum is use the `send()` and `read()` to send strings between the server and client. This is how we sent data between the programs as the server hosted a player and did the computations while the client would only host a player and give information back to the server. When doing this though we ran into an interesting issue where one program would send a message before the other program began trying to read it. This is an issue because the `send()` command only sends the data once whereas the `read()` command will continually try and read the socket until something is sent. So to make sure the reading on one program isn't in an infinite loop, we delayed whichever side was sending for 10ms so the other side would have ample time to establish their reading state. This was done using the `usleep()` command. Most of our issues stemmed from incorrectly-timed `send()` commands, so this fix resolved most of the bugs we faced.
 
 ## Reflection
 
