@@ -17,6 +17,7 @@ https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/
 Chapters 9 and 11 of Head First C were also helpful in allowing us to understand what some of the basics were behind this process, as for all of is this was basically our first interaction with server/client work.
 
 ## What Was Done
+Jack
 
 In this project, our aim is create the battleship game that can be played remotely between two players. Battle ship is a game wherein two players are given a 9 x 11 board and 5 ships. The ships are sized 1 x 1, 2 x 1, 3 x 1, 4 x 1, and 5 x 1, respectively. Without looking at each others' board, the two players randomly place the five ship on the board. Then, the players take turns, each guessing a block on the board in hopes that they have successfully "hit" the enemy ship. The first player to "hit" all of the opposing player's ships is the victor.  
 
@@ -85,6 +86,18 @@ if (connect(sock, (struct sockaddr * )&serv_addr, sizeof(serv_addr)) < 0)
 The server code above is used to establish a new socket on a defined port on the IP address of the computer that is running the server. Once created, the socket waits for any possible connections. Upon finding a connection, it will accept the connection assuming the client trying to connect has the correct address credentials. For the client side, all it needs to do is validate the address given by the user then try and connect to the server hosting the socket.
 
 Once the connection has been made between server and client, all that needs to be done at the minimum is use the `send()` and `read()` to send strings between the server and client. This is how we sent data between the programs as the server hosted a player and did the computations while the client would only host a player and give information back to the server. When doing this though we ran into an interesting issue where one program would send a message before the other program began trying to read it. This is an issue because the `send()` command only sends the data once whereas the `read()` command will continually try and read the socket until something is sent. So to make sure the reading on one program isn't in an infinite loop, we delayed whichever side was sending for 10ms so the other side would have ample time to establish their reading state. This was done using the `usleep()` command. Most of our issues stemmed from incorrectly-timed `send()` commands, so this fix resolved most of the bugs we faced.
+
+### Running the Game
+
+The last piece of the puzzle was creating the code to run the actual game. This was done using a while loop in both the server and client files after each player's board was created. The server side while loop would continue to run as long as there was at least one ship with at least one space not destroyed. On every iteration of the loop, these are the steps that would be taken:
+
+1. Check whose turn it is
+2. Make a guess
+  * If it is the client's turn, send messages to get the client's guess
+  * Otherwise, ask the user of the client side to guess
+3. Check again if the game is over, i.e. there is a space of a ship not destroyed
+
+Once completed, the server will send a message to the client side signifying that the game is over. On the client side, the while loop is structured differently as it only ever really needs to make a guess when the server asks it to. So the client while loop will iterate half the number of times that the server while loop will iterate. So we must put the correct number of `read()` statements to collect what the server is sending to the client. Once the client reads the "Done" message, it will stop the loop and then read the winner from the server.
 
 ## Reflection
 
