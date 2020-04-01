@@ -35,12 +35,19 @@ pivot from two client/one server to one client/one server
 
 ### Data Storage
 The first decision that needed to be made was the method on how we were going to store the data for each player. A battleship board consists of 9 rows and 11 columns. Each player has a board with their ships on it and another board that is keeping track of the players guesses.
-![Player Struct](pictures/player_struct.png)
+
+```c
+typedef struct {
+  int board[9][11];
+  int guess[9][11];
+  int ship_counts[5];
+} Player;
+```
+
 So we decided to create a struct called Player that stored 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on runtime, we decided to keep track of the ships and how many spaces each had before they were completely destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left.
 
-
-
-Network: basic socket stuff, delays
+### Network Implementation
+Once we had the data structure situated, we needed to move onto getting two computers to communicate using a socket connection. The most basic implementation is quite standard and can be found in the resources listed above.
 
 ## Reflection
 
