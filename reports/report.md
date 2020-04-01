@@ -48,6 +48,7 @@ The struct is called Player and it stores 2 two-dimensional arrays, one for the 
 
 ### Network Implementation
 Once we had the data structure situated, we needed to move onto getting two computers to communicate using a socket connection. The most basic implementation is quite standard and can be found in the resources listed above. For the sake of ease, below are two segments of the server and client code that are important to establishing the connection.
+
 #### Server
 
 ```c
@@ -70,7 +71,7 @@ if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
 }
 ```
 
-####Client
+#### Client
 
 ```c
 if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
