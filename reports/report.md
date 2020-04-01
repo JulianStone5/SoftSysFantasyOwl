@@ -34,7 +34,7 @@ pivot from two client/one server to one client/one server
 ## Code Implementation
 
 ### Data Storage
-The first decision that needed to be made was the method on how we were going to store the data for each player. A battleship board consists of 9 rows and 11 columns. Each player has a board with their ships on it and another board that is keeping track of the players guesses.
+The first decision that needed to be made was the method on how we were going to store the data for each player. A battleship board consists of 9 rows and 11 columns. Each player has a board with their ships on it and another board that is keeping track of the players guesses. We decided that we could best store these in a struct
 
 ```c
 typedef struct {
@@ -44,10 +44,46 @@ typedef struct {
 } Player;
 ```
 
-So we decided to create a struct called Player that stored 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on runtime, we decided to keep track of the ships and how many spaces each had before they were completely destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left.
+The struct is called Player and it stores 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on run time later in the code, we decided to keep track of the ships and how many spaces each had before they were completely destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left.
 
 ### Network Implementation
-Once we had the data structure situated, we needed to move onto getting two computers to communicate using a socket connection. The most basic implementation is quite standard and can be found in the resources listed above.
+Once we had the data structure situated, we needed to move onto getting two computers to communicate using a socket connection. The most basic implementation is quite standard and can be found in the resources listed above. For the sake of ease, below are two segments of the server and client code that are important to establishing the connection.
+#### Server
+
+```c
+if (bind(server_fd, (struct sockaddr *)&address,
+                             sizeof(address))<0)
+{
+    perror("bind failed");
+    exit(EXIT_FAILURE);
+}
+if (listen(server_fd, 3) < 0)
+{
+    perror("listen");
+    exit(EXIT_FAILURE);
+}
+if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
+                   (socklen_t*)&addrlen))<0)
+{
+    perror("accept");
+    exit(EXIT_FAILURE);
+}
+```
+#Client
+
+```c
+if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
+{
+    printf("\nInvalid address/ Address not supported \n");
+    return -1;
+}
+
+if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
+{
+    printf("\nConnection Failed \n");
+    return -1;
+}
+```
 
 ## Reflection
 
