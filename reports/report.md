@@ -34,9 +34,11 @@ pivot from two client/one server to one client/one server
 ## Code Implementation
 
 ### Data Storage
-The first decision that needed to be made was the method on how we were going to store the data for each player. A battleship board consists of 9 rows and 11 columns. Each player has a board with their ships on it and another board that is keeping track of the players guesses. So we decided to create a struct called Player that stored 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on runtime, we decided to keep track of the ships and how many spaces each had before they were completely destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left
-
+The first decision that needed to be made was the method on how we were going to store the data for each player. A battleship board consists of 9 rows and 11 columns. Each player has a board with their ships on it and another board that is keeping track of the players guesses.
 ![Player Struct](pictures/player_struct.png)
+So we decided to create a struct called Player that stored 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on runtime, we decided to keep track of the ships and how many spaces each had before they were completely destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left.
+
+
 
 Network: basic socket stuff, delays
 
