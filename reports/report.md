@@ -95,7 +95,7 @@ The last piece of the puzzle was creating the code to run the actual game. This 
 2. Make a guess
   * If it is the client's turn, send messages to get the client's guess
   * Otherwise, ask the user of the client side to guess
-3. Check again if the game is over, i.e. there is a space of a ship not destroyed
+3. Check again if the game is over, i.e. if there is a space of a ship not destroyed
 
 Once completed, the server will send a message to the client side signifying that the game is over. On the client side, the while loop is structured differently as it only ever really needs to make a guess when the server asks it to. So the client while loop will iterate half the number of times that the server while loop will iterate. So we must put the correct number of `read()` statements to collect what the server is sending to the client. Once the client reads the "Done" message, it will stop the loop and then read the winner from the server.
 
