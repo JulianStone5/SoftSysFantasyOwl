@@ -69,6 +69,7 @@ if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
     exit(EXIT_FAILURE);
 }
 ```
+
 ####Client
 
 ```c
