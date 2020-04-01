@@ -45,7 +45,7 @@ typedef struct {
 } Player;
 ```
 
-The struct is called Player and it stores 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on run time later in the code, we decided to keep track of the ships and how many spaces each had before they were completely destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left.
+The struct is called Player and it stores 2 two-dimensional arrays, one for the players actual board and one for the players guesses. Also, to save on run time later in the code, we decided to keep track of the ships and how many spaces each ship has that are not destroyed. This was held in an integer array where each index was a different ship and the number at that index was the number of spaces left.
 
 ### Network Implementation
 Once we had the data structure situated, we needed to move onto getting two computers to communicate using a socket connection. The most basic implementation is quite standard and can be found in the resources listed above. For the sake of ease, below are two segments of the server and client code that are important to establishing the connection.
@@ -95,7 +95,7 @@ The last piece of the puzzle was creating the code to run the actual game. This 
 2. Make a guess
   * If it is the client's turn, send messages to get the client's guess
   * Otherwise, ask the user of the client side to guess
-3. Check again if the game is over, i.e. if there is a space of a ship not destroyed
+3. Check again if the game is over, i.e. if one of the players has no remaining spaces
 
 Once completed, the server will send a message to the client side signifying that the game is over. On the client side, the while loop is structured differently as it only ever really needs to make a guess when the server asks it to. So the client while loop will iterate half the number of times that the server while loop will iterate. So we must put the correct number of `read()` statements to collect what the server is sending to the client. Once the client reads the "Done" message, it will stop the loop and then read the winner from the server.
 
