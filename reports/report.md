@@ -21,7 +21,7 @@ Jack
 
 In this project, our aim is create the battleship game that can be played remotely between two players. Battle ship is a game wherein two players are given a 9 x 11 board and 5 ships. The ships are sized 1 x 1, 2 x 1, 3 x 1, 4 x 1, and 5 x 1, respectively. Without looking at each others' board, the two players randomly place the five ship on the board. Then, the players take turns, each guessing a block on the board in hopes that they have successfully "hit" the enemy ship. The first player to "hit" all of the opposing player's ships is the victor.  
 
-To create the game, we first have to consider the essential components of our game. The most important aspects of our game are the network and the game rules. As such, we created a
+To create the game, we first have to consider the essential components of our game. The most important aspects of our game are the network and the game rules. As such, we created the board.c file. The board.c file contains all of functions for creating the logic of the game, such as creating a board and adding ships to the board. The server.c file handles the server side operations through socket programming. All calculations for the board are done on the server. The client.c handles the client side operations and sends messages for the server to interpret. The network_board.c is a supporting file that contains functions to be used in the server and client code.  
 
 show game working (screenshot)
 
@@ -31,6 +31,10 @@ Jack
 pivot from two client/one server to one client/one server
 
 - time and overscoped, not necessary given scope, only need two users, etc
+
+In the very beginning, wanted to create the battleship game with a server always running. The players would then connect to the server. However, we scrapped this idea due to several reasons. First, it was very difficult to do and we did not have the time to complete it. Second, it was an unnecessary measure since there are only two players involved. As such, we made the design decision that we wanted a player to host the server. So, the second player only needs to connect to the first player directly instead of using the roundabout way. In this way, the calculation will all be done on the first player's computer instead of a third party. 
+
+We also had several other ideas as we didn't really know how far we wanted to go with this project. So, we made three main waypoints for the project. The first is to have the game work on one person's computer. Then, we would want our game to work over the network. Lastly, we would like to have an A.I. that the player can play against. Our progress ended at the second waypoint because of time constraints.
 
 ## Code Implementation
 
