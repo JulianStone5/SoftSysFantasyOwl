@@ -69,7 +69,7 @@ if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
     exit(EXIT_FAILURE);
 }
 ```
-#Client
+####Client
 
 ```c
 if(inet_pton(AF_INET, serverAddr, &serv_addr.sin_addr)<=0)
