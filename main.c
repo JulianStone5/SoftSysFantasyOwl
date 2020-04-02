@@ -18,10 +18,10 @@ int main() {
   make_board(p2->guess);
   make_ship_counts(p1->ship_counts);
   make_ship_counts(p2->ship_counts);
-
+  //place ships on boards
   build_board(p1->board);
   build_board(p2->board);
-
+  //as long as someone hasn't lost, have a player make a guess
   int playerTurn = 0;
   while(!hasLost(p1->ship_counts) && !hasLost(p2->ship_counts)) {
     if(!playerTurn) {
