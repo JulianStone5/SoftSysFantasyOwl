@@ -22,10 +22,11 @@ In this project, our aim is create the battleship game that can be played remote
 
 To create the game, we first have to consider the essential components of our game. The most important aspects of our game are the network and the game rules. As such, we created the board.c file. The board.c file contains all of functions for creating the logic of the game, such as creating a board and adding ships to the board. The server.c file handles the server side operations through socket programming. All calculations for the board are done on the server. The client.c handles the client side operations and sends messages for the server to interpret. The network_board.c is a supporting file that contains functions to make board.c more network oriented in the server and client code.  
 
+#### Generating a Board
 ![Generating](pictures/Generating.png)
-
+#### Finishing Board Generation
 ![Finish Generating](pictures/Finish_Generating.png)
-
+#### Making a Guess
 ![Make Guess](pictures/Make_Guess.png)
 
 ## Design Decision
