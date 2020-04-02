@@ -1,4 +1,4 @@
-#README
+# README
 
 ## Two Computer Operation
 In order to run the battleship game, two computers must first pull this repository.  Once completed, each computer must navigate to the `SoftSysFantasyOwl` folder on their computer and run the command:
