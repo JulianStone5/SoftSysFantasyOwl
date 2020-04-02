@@ -30,25 +30,30 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
+    // checks if client has connected to the server socket
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         printf("\nConnection Failed \n");
         return -1;
     }
+
+    // send message to server to test connection
     send(sock , hello , strlen(hello) , 0 );
     printf("Hello message sent\n");
     valread = read( sock , buffer, 1024);
     printf("%s\n\n",buffer );
 
+    // builds the board for the client then moves onto server's board
     build_board_client(sock);
     memset(buffer,0,strlen(buffer));
     valread = read( sock , buffer, 1024);
     printf("%s\n\n",buffer );
 
-    while(strcmp(buffer,"Done") != 0) {
+    // while loop used for running the game
+    while(strcmp(buffer,"Done") != 0) { //If game over after client's turn
       memset(buffer,0,strlen(buffer));
       valread = read( sock , buffer, 1024);
-      if(strcmp(buffer,"Done") == 0) {
+      if(strcmp(buffer,"Done") == 0) { //If game over after server's turn
         break;
       }
       memset(buffer,0,strlen(buffer));
@@ -66,7 +71,7 @@ int main(int argc, char const *argv[])
       memset(buffer,0,strlen(buffer));
       valread = read( sock , buffer, 1024);
     }
-
+    //print winnter
     memset(buffer,0,strlen(buffer));
     valread = read( sock , buffer, 1024);
     printf("%s\n",buffer );

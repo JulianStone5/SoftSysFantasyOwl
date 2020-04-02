@@ -5,6 +5,8 @@ int cols = 11;
 
 /*
 Make_board creates and populates a 9x11 board with zeros
+
+int board: the number of rows and columns to make the board (9x11 in this case)
 */
 void make_board(int board[rows][cols]) {
   int i, j;
@@ -17,6 +19,8 @@ void make_board(int board[rows][cols]) {
 
 /*
 This function prints the entire board.
+
+int board: The number of rows and columns of the board we're printing (9x11)
 */
 void print_board(int board[rows][cols]) {
   int i,j;
@@ -43,6 +47,12 @@ void print_board(int board[rows][cols]) {
   }
 }
 
+/*
+Saves the board state as a string, useful for communication between terminals
+
+int board: the size of the board (9x11)
+char board_str[1000]: used to house the board state as a string
+*/
 void getBoardString(int board[rows][cols], char board_str[1000]) {
   strcat(board_str, "  ");
   int i,j;
@@ -74,6 +84,10 @@ void getBoardString(int board[rows][cols], char board_str[1000]) {
 
 /*
 Converts ships number label to ship size
+
+int ship: the ship number
+
+returns the value that represents the size of the aforementioned ship number
 */
 int get_size(int ship) {
   switch(ship) {
@@ -95,6 +109,11 @@ int get_size(int ship) {
   }
 }
 
+/*
+simple function to initialize ship ship counts
+
+int ship_counts[5]: an integer array to fill with counts
+*/
 void make_ship_counts(int ship_counts[5]) {
   int i;
   for(i = 0; i < 5; i++) {
@@ -104,6 +123,12 @@ void make_ship_counts(int ship_counts[5]) {
 
 /*
 Add a ship to a board given its label, start pos, and direction
+
+int board: a 9x11 two dimensional array
+int ship: the ship number of the ship in question
+int sX: starting x position
+int sY: starting y position
+int dir: 1 or 2 that determines whether the ship is facing right or down
 */
 void add_ship(int board[rows][cols], int ship, int sX, int sY, int dir) {
   int i, j;
@@ -119,6 +144,10 @@ void add_ship(int board[rows][cols], int ship, int sX, int sY, int dir) {
 
 /*
 Get user input to pick a ship's direction
+
+char * input: pointer to a character array of user input for ship direction
+
+returns an integer representing the direction the ship is facing, chosen by user
 */
 int getDir(char * input) {
   printf("Direction? Right (1) or Down (2): ");
@@ -135,6 +164,13 @@ int getDir(char * input) {
 
 /*
 Detect if a new ship would be colliding with existing ships
+
+int board: two dimensional integer array that holds a 9x11 board
+int s[2]: the starting index of the ship
+int ship_size: size of the ship
+int dir: direction of the ship
+
+returns either 0 or 1, depending on whether the ship has collided
 */
 int isColliding(int board[rows][cols], int s[2], int ship_size, int dir) {
   int i, j;
@@ -152,6 +188,12 @@ int isColliding(int board[rows][cols], int s[2], int ship_size, int dir) {
 
 /*
 Get user input to pick a ship's starting point
+
+int board: two dimensional integer array that stores a 9x11 board
+char * input: pointer to user input character array
+int s[2]: starting index of ship
+int ship_size: size of the ship in question
+int dir: direction of the ship
 */
 void getStart(int board[rows][cols],char * input, int s[2],int ship_size, int dir) {
   printf("Starting Coordinate? Options A1-K9: ");
@@ -175,6 +217,8 @@ void getStart(int board[rows][cols],char * input, int s[2],int ship_size, int di
 
 /*
 Get user input to build a starting board
+
+int board: two dimensional integer array that houses a 9x11 board
 */
 void build_board(int board[rows][cols]) {
   make_board(board);
@@ -196,7 +240,14 @@ void build_board(int board[rows][cols]) {
   printf("Done. Board Generated.\n");
 }
 
-// be wary of long wrong inputs for now ******
+/*
+allows the user to make a guess and checks to see the validity and
+outcome of the guess
+
+int board: two dimensional integer array that houses a 9x11 board
+int guess: the index the user guesses
+int ship_counts: the total ship count left
+*/
 void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]) {
   int s[2];
   char input[5];
@@ -226,6 +277,13 @@ void make_guess(int board[rows][cols], int guess[rows][cols], int ship_counts[5]
   }
 }
 
+/*
+looks at the board to see if all ships have been sunk
+
+int ship_count[5]: takes an array that represents the health of the five ships
+
+returns 1 if player has lost, else return 0
+*/
 int hasLost(int ship_counts[5]) {
   int i;
   for(i = 0; i < 5; i++) {

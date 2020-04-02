@@ -43,7 +43,5 @@ int main() {
   } else {
     printf("Player 1 Wins!\n");
   }
-  //make_guess(p1->board,p2->guess,p1->ship_counts);
-  //print_board(board);
   return 0;
 }

@@ -7,6 +7,7 @@ typedef struct {
   int ship_counts[5];
 } Player;
 
+
 int main(int argc, char const *argv[])
 {
     int server_fd, new_socket, valread;
@@ -53,11 +54,17 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
+    /*
+    send a verification message to ensure connection has taken place
+    */
     valread = read( new_socket , buffer, 1024);
     printf("%s\n",buffer );
     send(new_socket , hello , strlen(hello) , 0 );
     printf("Hello message sent\n");
 
+    /*
+    initialize ship counts, player arrays, and board arrays
+    */
     Player *client = malloc(sizeof(Player));
     Player *server = malloc(sizeof(Player));
     make_ship_counts(client->ship_counts);
@@ -65,6 +72,9 @@ int main(int argc, char const *argv[])
     make_board(client->guess);
     make_board(server->guess);
 
+    /*
+    Allow player 1 to populate their board, put player 2 in a rest state
+    */
     printf("Waiting for Player 1 Board Generation\n");
     build_board_server(client->board,new_socket);
     usleep(wait_time);
@@ -72,13 +82,18 @@ int main(int argc, char const *argv[])
     send(new_socket,buffer,strlen(buffer),0);
     build_board(server->board);
 
+    /*
+    Initialize the gameplay component, that alternates between players and
+    allows for the guessing of ships until a win state has been reached.
+    */
     char * board_str = malloc(1000* sizeof(char));
     int playerTurn = 0;
-    while(!hasLost(client->ship_counts) && !hasLost(server->ship_counts)) {
+    while(!hasLost(client->ship_counts) && !hasLost(server->ship_counts)) { //As long as no one has lost
       usleep(wait_time);
-      send(new_socket,"Nope",strlen("Nope"),0);
-      if(!playerTurn) {
+      send(new_socket,"Nope",strlen("Nope"),0); //Sends when game continues
+      if(!playerTurn) { //Client's turn
         printf("Player 1's Turn\n");
+        //First send the boards for the players reference
         usleep(wait_time);
         send(new_socket,"Player 1's Turn", strlen("Player 1's Turn"),0);
         memset(board_str, 0, strlen(board_str));
@@ -89,14 +104,19 @@ int main(int argc, char const *argv[])
         getBoardString(client->board,board_str);
         usleep(wait_time);
         send(new_socket, board_str, strlen(board_str),0);
+        //make guess
         make_guess_server(server->board, client->guess, server->ship_counts,new_socket);
         playerTurn = 1;
-      } else {
-        printf("Player 2's Turn\n");
+      } else { //Server's turn
+        //First send the boards for the players reference
+        printf("Player 2's Turn\n\n");
+        printf("Your Guesses:\n");
         print_board(server->guess);
         printf("\n");
+        printf("Your Board:\n");
         print_board(server->board);
         printf("\n");
+        //make guess
         make_guess(client->board, server->guess, client->ship_counts);
         playerTurn = 0;
       }
@@ -104,6 +124,7 @@ int main(int argc, char const *argv[])
     usleep(wait_time);
     send(new_socket,"Done",strlen("Done"),0);
     usleep(wait_time);
+    //check for win state based on the value of playerTurn
     if(!playerTurn) {
       printf("Player 2 Wins!\n");
       send(new_socket,"Player 2 Wins!",strlen("Player 2 Wins!"),0);
