@@ -1,4 +1,4 @@
-# Battleship.net
+# Battleship.net: A Socket-Based Battleship Game
 ### Jack Mao, Casey May, Julian Stone
 
 ## Goals
